@@ -4,6 +4,15 @@ import matplotlib.pyplot as plt
 def distance_euclid(p1, p2):
     dst = np.sqrt(((p1-p2)**2).sum())
     return dst
+
+def get_acc(kx, x_test, y_test, x_train, y_train):
+    preds = []
+    for ix in range(x_test.shape[0]):
+        label = KNN(x_train, y_train, x_test[ix], k=kx)
+        preds.append(label)
+        print ix
+    preds = np.array(preds)
+    return 100*float((preds==y_test).sum())/y_test.shape[0] 
 def KNN(X_Train, Y_Train, X_Test, k=5):
     vals = []
     for  ix in range(X_Train.shape[0]):
@@ -21,7 +30,7 @@ data = ds.values[:5000, :]
 
 split = int(data.shape[0]*0.8)
 print split
-split = int(data.shape[0]*0.80)
+split = int(data.shape[0]*0.95)
 
 X_Train = data[:split, 1:]
 Y_Train = data[:split, 0]
@@ -29,9 +38,12 @@ Y_Train = data[:split, 0]
 X_Test = data[split: , 1:]
 Y_Test = data[split:, 0]
 print X_Test.shape, Y_Test.shape, Y_Train.shape, Y_Train.shape
-
-ans = KNN(X_Train, Y_Train, X_Test[999])
+ans = KNN(X_Train, Y_Train, X_Test[100])
+acc = []
+for ix in range(3, 9, 2):
+    acc = get_acc(5, X_Test, Y_Test, X_Train, Y_Train)
+    print acc
 print ans
-
-plt.imshow(X_Test[999].reshape(28,28), cmap='gray')
+print X_Test.shape[0]
+plt.imshow(X_Test[100].reshape(28,28), cmap='gray')
 plt.show()
